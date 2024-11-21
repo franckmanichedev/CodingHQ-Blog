@@ -1,5 +1,9 @@
+<?php
+    $adminName = "";
+?>
+
 <section id="form">
-            <h3>Bienvenu, <span></span></h3>
+            <h3>Bienvenu, <span><?php echo !empty($adminName) ? $adminName : ''; ?></span></h3>
             <div class="info row d-flex justify-content-center align-items-center">
                 <div class="col-sm-12 col-md-12 col-lg-5 d-flex flex-column justify-content-center align-items-center">
                     <p>ARTICLE LE PLUS LIKER</p>
@@ -13,7 +17,7 @@
                     <p><span>142</span> Commentaire</p>
                 </div>
             </div>
-            <form method="POST" action="#" class="row" enctype="multipart/form-data">
+            <form method="POST" action="dashboard.php" class="row" enctype="multipart/form-data">
                 <div class="col-sm-12 col-md-12 col-lg-12 d-flex flex-column justify-content-center">
                     <label for="">Nom de l'article :</label>
                     <input type="text" name="nameart" id="">

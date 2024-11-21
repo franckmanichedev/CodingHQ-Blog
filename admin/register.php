@@ -1,12 +1,12 @@
 <?php
 include '../config.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isset($_POST["signup"])) {
     $adminname = $_POST['adminname'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO admin (admin_name, email,password) VALUES (?, ?, ?)"); // preparing and binding provides an extra layer of protection to the code to avoid sql injection
+    $stmt = $conn->prepare("INSERT INTO admin (admin_name, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $adminname, $email, $password); 
 
     if ($stmt->execute()) {
@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <!-- partial:index.partial.html -->
 <div class="container">
-  <form method="POST" action="conect.php"> 
+  <form method="POST" action="connect.php"> 
     <label for="adminname">Entrer nom nouvel administrateur</label>
     <input type="text" id="adminname" name="adminname" placeholder="adminname" />
     <label for="email">Votre Email</label>
     <input type="email" id="email" name="email" placeholder="Email" />
     <label for="password">Entrer votre mot de passe</label>
     <input type="password" id="password" name="password" placeholder="Password" />
-    <button type="submit">Inscription</button>
+    <button type="submit" name="signup">Inscription</button>
   </form>
   <div class="ear-l"></div>
   <div class="ear-r"></div>
