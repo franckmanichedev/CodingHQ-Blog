@@ -2,6 +2,11 @@
 <?php
 include '../config.php';
 
+$successregister = "";
+$failedregister = "";
+$failedSearchUser = "";
+$wrontPassword = "";
+
 //Verifier si le formulaire d'inscription est soumis
 if (isset($_POST['signup'])) {
     $username = $_POST['signname'];
@@ -12,9 +17,9 @@ if (isset($_POST['signup'])) {
     $stmt->bind_param("sss", $username, $email, $password);
 
     if ($stmt->execute()) {
-        echo "Enregistrement effectuer avec success. <a href='login.php'>Connection</a>";
+        $successregister = "Enregistrement effectuer avec success.";
     } else {
-        echo "Echec d'enregistrement.";
+        $failedregister = "Echec d'enregistrement.";
     }
     $stmt->close();
 }
@@ -46,18 +51,19 @@ if (isset($_POST['signin'])) {
     // }
 
 	if ($result->num_rows === 0) {
-		echo "Utilisateur introuvable";
+		$failedSearchUser = "Utilisateur introuvable";
 	} else {
 		$user = $result->fetch_assoc();
 		
 		if(!isset($user['password'])) {
 			echo "Erreur lors de la recuperation du mot de passe";
 		} elseif(!password_verify($password, $user['password'])) {
-		    echo "Mot de passe incorrect";
+		    $wrontPassword = "Mot de passe incorrect";
 			echo "Mot de passe saisi:" . $password . "<br>";
 			echo "Mot de passe stocke:" . $user['password'] . "<br>";
 		} else {
-			$_SESSION['id'] = $user['id'];
+			$_SESSION['id'] = $row['id'];
+			$_SESSION['user_name'] = $row['user_name']
 		    header("Location: ../Front Office/index.php");
 		    exit();
 		}	
@@ -77,6 +83,8 @@ if (isset($_POST['signin'])) {
 <body>
 <!-- partial:index.partial.html -->
 <div class="container" id="container">
+
+	<!-- Partie d'inscription de l'user -->
 	<div class="form-container sign-up-container">
 		<form method="POST" action="#">
 			<h1>Creer compte</h1>
@@ -90,8 +98,12 @@ if (isset($_POST['signin'])) {
 			<input type="email" name="signemail" placeholder="Email" />
 			<input type="password" name="signpassword" placeholder="Mot de passe" />
 			<button name="signup" type="submit">S'inscrire</button>
+			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($successregister) ? $successregister : ''; ?></p>
+			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($failedregister) ? $failedregister : ''; ?></p>
 		</form>
 	</div>
+
+	<!-- Partie de connexion a son compte user -->
 	<div class="form-container sign-in-container">
 		<form method="POST" action="../Front Office/index.php">
 			<h1>Se connecter</h1>
@@ -102,11 +114,16 @@ if (isset($_POST['signin'])) {
 			</div>
 			<span>or use your account</span> -->
 			<input type="email" name="logemail" placeholder="Email" />
+			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($failedSearchUser) ? $failedSearchUser : ''; ?></p> 
 			<input type="password" name="logpassword" placeholder="Mot de passe" />
+			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($wrontPassword) ? $wrontPassword : ''; ?></p> 
 			<a href="#">Mot de passe oublier</a>
 			<button name="signin" type="submit">Se connecter</button>
+			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($wrontPassword) ? $wrontPassword : ''; ?></p> 
 		</form>
 	</div>
+
+	<!-- Message de bienvenu a afficher a l'utilisateur pour effectuer une action -->
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">

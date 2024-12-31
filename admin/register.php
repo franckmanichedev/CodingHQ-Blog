@@ -2,19 +2,34 @@
 include '../config.php';
 
 if (isset($_POST["signup"])) {
-    $adminname = $_POST['adminname'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+  $email = $_POST['email'];
+  $adminname = $_POST['adminname'];
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO admin (admin_name, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $adminname, $email, $password); 
+  // Debugging: Print the email
+  echo "Email entered: " . htmlspecialchars($email) . "<br>";
+
+  $stmt = $conn->prepare("SELECT * FROM admin WHERE email = ?");
+  $stmt->bind_param("s", $email);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $num_user = $result->num_rows;
+  $stmt->close();
+
+  // Debugging: Print the result of the query
+  if ($num_user > 0) {
+    echo "Email already exists.<br>";
+  } else {
+    $stmt = $conn->prepare("INSERT INTO admin (admin_name, email, `password`) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $adminname, $email, $password);
 
     if ($stmt->execute()) {
-        echo "Enregistrement effectuer avec success. <a href='connect.php'>Connection</a>";
+      echo "Registration successful. <a href='connect.php'>Login</a>";
     } else {
-        echo "Echec d'enregistrement." .$stmt->error;
+      echo "Registration failed: " . $stmt->error;
     }
     $stmt->close();
+  }
 }
 ?>
 
@@ -29,14 +44,14 @@ if (isset($_POST["signup"])) {
 <body>
 <!-- partial:index.partial.html -->
 <div class="container">
-  <form method="POST" action="connect.php"> 
+  <form method="post" action="register.php"> 
     <label for="adminname">Entrer nom nouvel administrateur</label>
     <input type="text" id="adminname" name="adminname" placeholder="adminname" />
     <label for="email">Votre Email</label>
     <input type="email" id="email" name="email" placeholder="Email" />
     <label for="password">Entrer votre mot de passe</label>
     <input type="password" id="password" name="password" placeholder="Password" />
-    <button type="submit" name="signup">Inscription</button>
+    <button type="submit" name="signup">Sign Up</button>
   </form>
   <div class="ear-l"></div>
   <div class="ear-r"></div>
