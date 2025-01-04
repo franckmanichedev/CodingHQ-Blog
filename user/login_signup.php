@@ -13,15 +13,28 @@ if (isset($_POST['signup'])) {
     $email = $_POST['signemail'];
     $password = password_hash($_POST['signpassword'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO user (user_name, email, password) VALUES (?, ?, ?)"); // preparing and binding provides an extra layer of protection to the code to avoid sql injection
-    $stmt->bind_param("sss", $username, $email, $password);
+	echo "Email entree: " . htmlspecialchars($email) . "<br>";
 
-    if ($stmt->execute()) {
-        $successregister = "Enregistrement effectuer avec success.";
-    } else {
-        $failedregister = "Echec d'enregistrement.";
-    }
-    $stmt->close();
+	$stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
+	$stmt->bind_param("s", $email);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$num_user = $result->num_rows;
+	$stmt->close();
+
+    if ($num_user > 0) {
+		echo "Email deja utiliser.<br>";
+	} else {
+		$stmt = $conn->prepare("INSERT INTO user (user_name, email, password) VALUES (?, ?, ?)"); // preparing and binding provides an extra layer of protection to the code to avoid sql injection
+		$stmt->bind_param("sss", $username, $email, $password);
+
+		if ($stmt->execute()) {
+			$successregister = "Enregistrement effectuer avec success.";
+		} else {
+			$failedregister = "Echec d'enregistrement.";
+		}
+		$stmt->close();
+	}
 }
 
 //Verifier si le formulaire de connexion est soumis
@@ -35,38 +48,23 @@ if (isset($_POST['signin'])) {
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-    //$user = $result->fetch_assoc();
+    $user = $result->fetch_assoc();
 
-    // if (!$user) {
-	// 	echo "Utilisateur introuvable";
-	// } else
-	// if(!password_verify($password, $user['password'])) {
-    //     echo "Mot de passe incorrect";
-	// 	echo "Mot de passe saisi:" . $password . "<br>";
-	// 	echo "Mot de passe stocke:" . $user['password'] . "<br>";
-    // } else {
-    //     $_SESSION['id'] = $user['id'];
-    //     header("Location: home.php");
-    //     exit();
-    // }
-
-	if ($result->num_rows === 0) {
+    if (!$user) {
 		$failedSearchUser = "Utilisateur introuvable";
 	} else {
-		$user = $result->fetch_assoc();
-		
-		if(!isset($user['password'])) {
-			echo "Erreur lors de la recuperation du mot de passe";
-		} elseif(!password_verify($password, $user['password'])) {
-		    $wrontPassword = "Mot de passe incorrect";
-			echo "Mot de passe saisi:" . $password . "<br>";
-			echo "Mot de passe stocke:" . $user['password'] . "<br>";
+		if(password_verify($password, $user['password'])) {
+			$_SESSION['id'] = $user['id'];
+			$_SESSION['user_name'] = $user['user_name'];
+
+			echo "Sesseion ID: " . $_SESSION['id'] . "<br>";
+			echo "Sesseion User name: " . $_SESSION['user_name'] . "<br>";
+			
+			header("Location: ../Front Office/index.php");
+			exit();
 		} else {
-			$_SESSION['id'] = $row['id'];
-			$_SESSION['user_name'] = $row['user_name']
-		    header("Location: ../Front Office/index.php");
-		    exit();
-		}	
+			$wrontPassword = "Mot de passe incorrect";
+		}
 	}
     $stmt->close();
 }
@@ -105,7 +103,7 @@ if (isset($_POST['signin'])) {
 
 	<!-- Partie de connexion a son compte user -->
 	<div class="form-container sign-in-container">
-		<form method="POST" action="../Front Office/index.php">
+		<form method="POST" action="#">
 			<h1>Se connecter</h1>
 			<!-- <div class="social-container">
 				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -119,7 +117,6 @@ if (isset($_POST['signin'])) {
 			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($wrontPassword) ? $wrontPassword : ''; ?></p> 
 			<a href="#">Mot de passe oublier</a>
 			<button name="signin" type="submit">Se connecter</button>
-			<p class="otherUseIt" style="color: red; margin: -1em 0 3em; width: 80%; text-align: center;"><?php echo !empty($wrontPassword) ? $wrontPassword : ''; ?></p> 
 		</form>
 	</div>
 

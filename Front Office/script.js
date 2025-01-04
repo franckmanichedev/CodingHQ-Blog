@@ -39,3 +39,22 @@ for (let i = 0; i < themeBtn.length; i++) {
   })
 
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.like').forEach(function(button) {
+      button.addEventListener('click', function(event) {
+          event.preventDefault();
+          var articleId = this.getAttribute('data-id');
+          fetch('like.php?id=' + articleId)
+              .then(response => response.text())
+              .then(data => {
+                  if (data === 'success') {
+                      alert('Article liké avec succès');
+                      location.reload();
+                  } else {
+                      alert(data); // Affichez le message d'erreur détaillé
+                  }
+              });
+      });
+  });
+});

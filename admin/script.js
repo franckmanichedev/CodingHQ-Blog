@@ -12,9 +12,9 @@ let normalEyeStyle = () => {
 
 let normalHandStyle = () => {
   handL.style.cssText =
-    "height: 2.81em; top: 8.4em; left: 7.5em; transform: rotate(0deg);";
+    "height: 2.81em; top: 3em; left: 7.5em; transform: rotate(0deg);";
   handR.style.cssText =
-    "height: 2.81em; top: 8.4em; right: 7.5em; transform: rotate(0deg);";
+    "height: 2.81em; top: 3em; right: 7.5em; transform: rotate(0deg);";
 };
 
 // When clicked on adminname input
@@ -27,9 +27,9 @@ adminnameRef.addEventListener("focus", () => {
 // When clicked on password input
 passwordRef.addEventListener("focus", () => {
   handL.style.cssText =
-    "height: 6.56em; top: 3.87em; left: 11.75em; transform: rotate(-155deg);";
+    "height: 6.56em; top: -2em; left: 11.75em; transform: rotate(-155deg);";
   handR.style.cssText =
-    "height: 6.56em; top: 3.87em; right: 11.75em; transform: rotate(155deg);";
+    "height: 6.56em; top: -2em; right: 11.75em; transform: rotate(155deg);";
   normalEyeStyle();
 });
 

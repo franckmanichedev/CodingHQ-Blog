@@ -74,6 +74,31 @@ form button {
   letter-spacing: 0.15em;
   margin-top: 0.8em;
 }
+.exist{
+  text-align: center;
+  color: red;
+  margin: 0 0 5px;
+}
+.possibility{
+  margin-top: 1em;
+  text-align: center;
+}
+.possibility a,
+.succes-register a{
+  text-decoration: none;
+  color: #8e70e6;
+  transition: 0.5s;
+  cursor: pointer;
+}
+.possibility a:hover,
+.succes-register a:hover{
+  text-decoration: underline;
+}
+.succes-register{
+  color: #71c418;
+  text-align: center;
+  margin: 10px 0;
+}
 .panda-face {
   height: 7.5em;
   width: 8.4em;

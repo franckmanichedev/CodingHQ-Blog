@@ -4,6 +4,13 @@ include '../config.php';
 include 'header.php';
 include 'contenu.php';
 
+$succesAdd = "";
+$failAdd = "";
+$nonSoumis = "";
+$fileAutorize = "";
+$failLoad = "";
+$selectFile = "";
+
 if (isset($_POST['poster'])) {
     // Récupération des données du formulaire
     $nameart = htmlspecialchars($_POST['nameart']);
@@ -45,23 +52,36 @@ if (isset($_POST['poster'])) {
                 $stmt->bind_param("ssssss", $nameart, $category, $description, $coverimage_path, $pubimage_path, $public);
 
                 if ($stmt->execute()) {
-                    echo "Enregistrement effectué avec succès.";
+                    $succesAdd = "Enregistrement effectué avec succès.";
                 } else {
-                    echo "Échec d'enregistrement : " . $stmt->error;
+                    $failAdd = "Échec d'enregistrement : " . $stmt->error;
                 }
 
                 $stmt->close();
             } else {
-                echo "Erreur lors du téléchargement des fichiers.";
+                $failLoad = "Erreur lors du téléchargement des fichiers.";
             }
         } else {
-            echo "Types de fichiers autorisés : JPG, JPEG, PNG uniquement.";
+            $fileAutorize = "Types de fichiers autorisés : JPG, JPEG, PNG uniquement.";
         }
     } else {
-        echo "Veuillez sélectionner les fichiers de type PNG, JPG, JPEG pour le téléchargement.";
+        $selectFile = "Veuillez sélectionner les fichiers de type PNG, JPG, JPEG pour le téléchargement.";
     }
 } else {
-    echo "Formulaire non soumis.";
+    $nonSoumis = "Formulaire non soumis.";
 }
 
 ?>
+
+                <p class="differentMessage">
+                    <?php echo $nonSoumis; ?>
+                    <?php echo $selectFile; ?>
+                    <?php echo $fileAutorize; ?>
+                    <?php echo $failLoad; ?>
+                    <?php echo $failAdd; ?>
+                    <?php echo $succesAdd; ?>
+                </p>
+            </main>
+        <script src="script.js"></script>
+    </body>
+</html>

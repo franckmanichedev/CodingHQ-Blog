@@ -21,7 +21,7 @@
         <ul class="footer-flex">
 
           <li>
-            <a href="#" class="footer-link">Accueil</a>
+            <a href="./index.php" class="footer-link">Accueil</a>
           </li>
 
           <li>
